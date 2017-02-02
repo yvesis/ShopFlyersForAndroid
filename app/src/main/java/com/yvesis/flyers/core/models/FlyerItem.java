@@ -9,10 +9,13 @@ public class FlyerItem {
     private String name;
     private String price;
     private String imageUrl;
+    private String id;
 
+    public static int itemsCount = 0;
     public FlyerItem(String name, String price) {
         this.name = name;
         this.price = price;
+        this.id = String.valueOf(++itemsCount);
 
     }
 
@@ -45,4 +48,10 @@ public class FlyerItem {
     public String toString() {
         return name + " @" + price;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public boolean saved;
 }

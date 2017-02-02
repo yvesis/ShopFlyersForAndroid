@@ -1,13 +1,17 @@
 package com.yvesis.flyers;
 
+import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +25,7 @@ import com.yvesis.flyers.core.models.FlyerShop;
 import com.yvesis.flyers.core.net.Downloader;
 import com.yvesis.flyers.core.net.FlyerContentDownloader;
 import com.yvesis.flyers.core.net.FlyersDownloader;
+import com.yvesis.flyers.core.storage.FileManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                FlyersDownloader downloader = new FlyersDownloader("http://www.maxi.ca/fr_CA");
+                final FlyersDownloader downloader = new FlyersDownloader("http://www.maxi.ca/fr_CA");
                 downloader.getContent("flyers.pageview.banner@MAXI.storenum@8705.week@current.html", new Downloader.IDownloaderCallback() {
                     @Override
                     public void onContentDownloaded(String htmlContent) {
@@ -63,9 +68,23 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onContentParsed(String htmlContent, Object shopFlyer) {
 
-                        shop = (FlyerShop)shopFlyer;
-                        setTitle("Flyer : " +shop.getShopName());
-                        updateList();
+                        if(shopFlyer != null){
+                            shop = (FlyerShop)shopFlyer;
+                            setTitle("Flyer : " +shop.getShopName());
+                            updateList();
+                        }
+                        else{
+                            final Downloader.IDownloaderCallback cb = this;
+                            Snackbar.make(findViewById(R.id.activity_main),"Error, check your connection", Snackbar.LENGTH_LONG)
+                                    .setAction("Retry", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                           // downloader.getContent("flyers.pageview.banner@MAXI.storenum@8705.week@current.html", cb);
+                                        }
+                                    })
+                                    .show();
+                        }
+
                     }
 
                     @Override
@@ -92,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }*/
 
-        flyerItemAdapter = new ShopFlyerItemsAdapter(shop);
+        flyerItemAdapter = new ShopFlyerItemsAdapter(this,shop);
         listview.setAdapter(flyerItemAdapter);
 
         flyerItemAdapter.notifyDataSetChanged();
@@ -104,10 +123,13 @@ public class MainActivity extends AppCompatActivity {
 class ShopFlyerItemsAdapter extends RecyclerView.Adapter<ShopFlyerItemsAdapter.FlyerItemViewHolder>{
 
     private FlyerShop shop;
+    FileManager fileManager;
+    Context context;
 
-
-    public ShopFlyerItemsAdapter(FlyerShop shop) {
+    public ShopFlyerItemsAdapter(Context context, FlyerShop shop) {
         this.shop = shop;
+        this.context = context;
+        fileManager = FileManager.getInstance(context);
 
     }
 
@@ -120,37 +142,53 @@ class ShopFlyerItemsAdapter extends RecyclerView.Adapter<ShopFlyerItemsAdapter.F
     @Override
     public void onBindViewHolder(final FlyerItemViewHolder flyerItemViewHolder, int position) {
 
-        FlyerItem fItem = shop.getItem(position);
+        final FlyerItem fItem = shop.getItem(position);
 
         flyerItemViewHolder.categoryText.setText(shop.getItemCategory(position));
         flyerItemViewHolder.descriptionText.setText(fItem.getName());
         flyerItemViewHolder.priceText.setText(fItem.getPrice());
-        FlyerContentDownloader contentDownloader = new FlyerContentDownloader(fItem.getImageUrl());
-        try
-        {
-            contentDownloader.getContent(fItem.getImageUrl(), new Downloader.IDownloaderCallback() {
-                @Override
-                public void onContentDownloaded(String htmlContent) {
+        if(fItem.saved && fileManager.fileExists(fItem.getId())){
+            byte[] bytes = null;
+            Log.i("file","exists");
+            if((bytes = fileManager.readAllBytes(fItem.getId())).length >0)
+            {
+               // fileManager.readAllBytes(fItem.getId(),bytes);
+                Log.i("read", String.valueOf(bytes.length));
+                flyerItemViewHolder.imageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes,0, bytes.length));
+            }
+        }else {
+            Log.i("file","not exists");
+            FlyerContentDownloader contentDownloader = new FlyerContentDownloader(fItem.getImageUrl());
+            try
+            {
+                contentDownloader.getContent(fItem.getImageUrl(), new Downloader.IDownloaderCallback() {
+                    @Override
+                    public void onContentDownloaded(String htmlContent) {
 
-                }
-
-                @Override
-                public void onContentParsed(String htmlContent, Object content) {
-                    if( content != null){
-                        byte[] bytes = (byte[]) content;
-                        flyerItemViewHolder.imageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes,0, bytes.length));
                     }
 
-                }
+                    @Override
+                    public void onContentParsed(String htmlContent, Object content) {
+                        if( content != null){
+                            byte[] bytes = (byte[]) content;
+                            flyerItemViewHolder.imageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes,0, bytes.length));
+                            fileManager.writeAllBytes(fItem.getId(),bytes);
+                            Log.i("write", String.valueOf(bytes.length));
+                            fItem.saved = true;
+                        }
 
-                @Override
-                public void oneDownloadFailed(String htmlContent) {
+                    }
 
-                }
-            });
-        }catch (Exception e){
-            e.printStackTrace();
+                    @Override
+                    public void oneDownloadFailed(String htmlContent) {
+
+                    }
+                });
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
+
 
 
 

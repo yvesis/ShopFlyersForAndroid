@@ -18,7 +18,7 @@ import org.jsoup.select.Elements;
 public class BasicFlyerParser implements IShopFlyerParser<FlyerShop> {
     @Override
     public FlyerShop parse(String content) {
-
+        if(content == null) return null;
         Document doc = Jsoup.parse(content);
 
         String shopName = doc.select("div.flatsheettopbar-menu-item.flatsheettopbar-location")
@@ -26,6 +26,7 @@ public class BasicFlyerParser implements IShopFlyerParser<FlyerShop> {
         FlyerShop maxi = new FlyerShop(shopName);
         Log.i("shop",shopName);
         Elements categories = doc.select("div.items-list>div:gt(0)");
+        FlyerItem.itemsCount = 0;
 
         for(Element category : categories)
         {
