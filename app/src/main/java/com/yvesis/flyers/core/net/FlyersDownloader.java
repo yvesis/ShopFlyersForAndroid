@@ -47,7 +47,7 @@ public class FlyersDownloader extends Downloader {
             String maxiUrl ="http://flyers.maxi.ca/flyers/maxi-weeklyflyercq5/grid_view/210003?type=2&flyer_type_name=weeklyflyercq5%3Bhide%3Dflyer%2Cweeklyflyer%3Blocale%3Dfr%3Bstore_code%3D8906";
             String superCUrl = "http://ecirculaire.superc.ca/flyers/superc-circulaire/grid_view/212151?locale=fr&postal_code=h4l3h4&store_code=5928&type=2";
 
-           url = superCUrl;//maxiUrl;//
+           url = maxiUrl;//superCUrl;//
             Log.i("url",url);
 
             String content = super.getDocument(url).html();
