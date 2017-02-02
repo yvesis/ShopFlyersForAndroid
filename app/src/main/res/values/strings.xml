@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Flyers</string>
+    <string name="_0_99">$ 0.99</string>
+    <string name="category">Category</string>
+    <string name="description">Description</string>
+    <string name="item_image">item_image</string>
+</resources>
