@@ -14,7 +14,7 @@ import java.io.IOException;
  * Created by louly on 2017-02-02.
  */
 
-public class FileManager {
+public class FileManager implements IFileManager {
 
     static Object lock;
 
@@ -34,6 +34,7 @@ public class FileManager {
     private FileManager(Context context){
         this.context = context;
     }
+    @Override
     public byte[] readAllBytes(String filename){
         synchronized (lock)
         {
@@ -58,10 +59,12 @@ public class FileManager {
         }
 
     }
+    @Override
     public boolean fileExists(String filename){
 
         return context.getFileStreamPath(filename).exists();
     }
+    @Override
     public boolean writeAllBytes(String filename, byte[] bytes){
 
         FileOutputStream outputStream = null;

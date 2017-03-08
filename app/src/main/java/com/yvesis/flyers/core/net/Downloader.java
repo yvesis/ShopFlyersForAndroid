@@ -15,22 +15,13 @@ import java.io.IOException;
  * Created by louly on 2017-01-30.
  */
 
-public abstract class Downloader extends AsyncTask<String,Void,String> {
+public abstract class Downloader extends AsyncTask<String,Void,String> implements IDownloader {
 
     protected IDownloaderCallback callback;
     protected String baseUrl;
     protected Downloader(String baseUrl){
         this.baseUrl = baseUrl;
     }
-    public interface IDownloaderCallback<T>
-    {
-
-        void onContentDownloaded(String htmlContent);
-        <T> void onContentParsed(String htmlContent,T moodle);
-        void oneDownloadFailed(String htmlContent);
-    }
-
-    public abstract void getContent(String url, IDownloaderCallback callback);
 
     protected Document getDocument(String url) throws IOException {
 

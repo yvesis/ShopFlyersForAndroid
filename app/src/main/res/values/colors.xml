@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303f9f</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorBlue1">#e6f2ff</color>
+    <color name="colorPrimary">#FFC107</color>
+    <color name="colorPrimary2">#3F51B5</color>
+    <color name="colorPrimaryDark">#FFA000</color>
+    <color name="colorAccent">#f5610b</color>
+    <color name="colorFlyer">#FFE57F</color>
     <color name="colorBlue2">#e6eeff</color>
 </resources>

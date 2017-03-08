@@ -4,13 +4,16 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:background="@color/colorPrimaryDark">
+    android:padding="0dp"
+    android:background="@color/colorPrimaryDark"
+    android:weightSum="1">
 
     <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/item_cardview">
+        android:id="@+id/item_cardview"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -26,7 +29,7 @@
                 android:text="Category"
                 android:gravity="start"
                 android:textAlignment="viewStart"
-                android:background="@color/colorBlue1"
+                android:background="@color/colorPrimary"
                 android:padding="10dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -36,12 +39,12 @@
                 android:layout_below="@id/categoryText"
                 android:layout_alignParentLeft="true">
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/item_image"
                    android:layout_gravity="center_vertical"
                     android:layout_alignParentLeft="true"
-                    android:src="@android:drawable/ic_menu_view"/>
+                    android:src="@android:drawable/ic_menu_view"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp" />
                 <TextView
                     android:layout_width="match_parent"
                     android:id="@+id/item_price"

@@ -4,4 +4,11 @@
     <string name="category">Category</string>
     <string name="description">Description</string>
     <string name="item_image">item_image</string>
+
+    <!-- Id for menus-->
+    <string name="menu_flyers_list">Flyers</string>
+    <string name="menu_shopping_list">Shopping list</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_compare">Compare</string>
 </resources>
